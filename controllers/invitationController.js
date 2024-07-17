@@ -30,9 +30,9 @@ const sendInvitation = async (req, res) => {
         return res.status(400).json({ error: "One  invitees not found" });
       }
       
-        if (inviter.id == inviter.id) {
-        return res.status(400).json({ error: "you can invitees other not you" });
-      }
+      //   if (inviteeIds.id == inviteeIds.id) {
+      //   return res.status(400).json({ error: "you can invitees other not you" });
+      // }
     
 
     const invitations = await Promise.all(
@@ -42,6 +42,7 @@ const sendInvitation = async (req, res) => {
           inviteeId: invitee.id,
           eventId,
           message,
+          
         });
         return invitation;
       })

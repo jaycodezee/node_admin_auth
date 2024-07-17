@@ -1,7 +1,5 @@
-// Admin.js
-
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // Adjust path as per your project structure
+const sequelize = require('../config/database');
 
 const Admin = sequelize.define('Admin', {
   id: {
@@ -30,6 +28,9 @@ const Admin = sequelize.define('Admin', {
   resetPasswordExpires: { 
     type: DataTypes.DATE,
     allowNull: true,
+  },
+  accessToken: {
+    type: DataTypes.TEXT, 
   },
 },{
   freezeTableName:true,

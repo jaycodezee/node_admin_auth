@@ -1,18 +1,19 @@
 const express = require('express');
 const sequelize = require('./config/database');
-const Admin = require('./models/Admin');
-const User = require('./models/user');
-const invitation = require('./models/invitation');
 const authRoutes = require('./routes/admin');
 const adminRoutes = require('./routes/user');
 const event = require('./routes/event');
 const invitationRoutes = require('./routes/invitationRoutes');
+const globalErrHandler = require('./controllers/errorController');
+
 
 require('dotenv').config();
 
 const app = express();
 
 app.use(express.json());
+
+app.use(globalErrHandler);
 
 app.use('/api', authRoutes);
 app.use('/admin', adminRoutes);

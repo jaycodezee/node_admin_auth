@@ -33,7 +33,6 @@ const User = sequelize.define('User', {
     timestamps: false,
 });
 
-// Define associations
 Admin.hasMany(User, { foreignKey: 'adminId' });
 User.belongsTo(Admin, { foreignKey: 'adminId' });
 

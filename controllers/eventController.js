@@ -1,10 +1,10 @@
 const Event = require('../models/event');
 const Admin = require('../models/admin')
+const { Op } = require("sequelize");
 
 const createEvent = async (req, res) => {
     try {
         const { eventName, category, startDate, endDate, adminId} = req.body;
-
         const admin = await Admin.findByPk(adminId);
         if (!admin) {
             return res.status(404).json({ error: 'Admin not found' });
@@ -107,8 +107,11 @@ const listEvents = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10; 
         const offset = (page - 1) * limit;
 
-        // Fetch events with pagination
         const events = await Event.findAndCountAll({
+            include: [{
+                model: Admin,
+                attributes: ['username']
+              }],
             offset,
             limit,
             order: [['createdAt']], 
@@ -146,11 +149,44 @@ const getEventById = async (req, res) => {
         console.error('Error fetching event:', error);
         res.status(500).json({ error: 'Failed to fetch event' });
     }
-}
+};
+
+const filterUsers = async (req, res) => {
+    try {
+      const { searchKey, searchValue } = req.query;
+      const whereCondition = {};
+    //   console.log('searchKey, searchValue :>> ', searchKey, searchValue);
+  
+      if (searchKey && searchValue) {
+        whereCondition[searchKey] = { [Op.like]: `%${searchValue}%` };
+      }
+  
+      const users = await Event.findAll({
+        where: whereCondition,
+        include: [{
+            model: Admin,
+            attributes: ['username', ]
+          }],
+      });
+  
+      if (users.length === 0) {
+        return res.status(404)
+          .json({ message: "No event found matching the database" });
+      }
+  
+      res.status(200).json({ users});
+    } catch (error) {
+      console.error("Error filtering users:", error);
+      res.status(500).json({ error: "Failed to filter event" });
+    }
+  };
+
+
 module.exports = {
     createEvent,
     deleteEvent,
     updateEvent,
     listEvents,
-    getEventById
+    getEventById,
+    filterUsers
 };
