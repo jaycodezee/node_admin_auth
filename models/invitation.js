@@ -35,7 +35,6 @@ const Invitation = sequelize.define('Invitation', {
     timestamps: true,
 });
 
-// Define associations
 User.hasMany(Invitation, { foreignKey: 'inviterId', as: 'invitationsSent' });
 User.hasMany(Invitation, { foreignKey: 'inviteeId', as: 'invitationsReceived' });
 Invitation.belongsTo(User, { foreignKey: 'inviterId', as: 'inviter' });

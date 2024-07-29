@@ -18,8 +18,14 @@ const ChangepasswordSchema = Joi.object({
     confirmPassword: Joi.string().min(5).required().valid(Joi.ref('newPassword')),
 }).with('newPassword', 'confirmPassword');
 
+const emailforgotSchema = Joi.object({
+    newPassword: Joi.string().min(3).required()
+});
+
+
 module.exports = {
     signupschema,
     loginSchema,
-    ChangepasswordSchema
+    ChangepasswordSchema,
+    emailforgotSchema
  };

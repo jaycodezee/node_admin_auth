@@ -48,7 +48,7 @@ const Event = sequelize.define('Event', {
     timestamps: true
 });
 
-Admin.hasMany(Event, { foreignKey: 'createdBy' });
+Admin.hasMany(Event, { foreignKey: 'createdBy' } );
 Event.belongsTo(Admin, { foreignKey: 'createdBy' });
 
 module.exports = Event;

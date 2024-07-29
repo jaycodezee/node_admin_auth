@@ -4,20 +4,21 @@ const { Op } = require("sequelize");
 
 const createEvent = async (req, res) => {
     try {
-        const { eventName, category, startDate, endDate, adminId} = req.body;
+        const { eventName, category, startDate, endDate} = req.body;
+        const adminId = req.user.id; 
         const admin = await Admin.findByPk(adminId);
-        if (!admin) {
-            return res.status(404).json({ error: 'Admin not found' });
-        }
+        // if (!admin) {
+            //     return res.status(404).json({status:404, error: 'Admin not found' });
+            // }
 
         const existingEvent = await Event.findOne({ where: { eventName } });
         if (existingEvent) {
-            return res.status(400).json({ error: 'Event with this name already exists' });
+            return res.status(400).json({status:400, error: 'Event with this name already exists' });
         }
 
         const today = new Date();
         if (new Date(startDate) < today) {
-            return res.status(400).json({ error: 'Cannot add event that has already started' });
+            return res.status(400).json({status:400, error: 'Cannot add event that has already started' });
         }
 
             // Create new event
@@ -29,24 +30,19 @@ const createEvent = async (req, res) => {
                 createdBy: adminId,
             });
     
-            // Prepare response object with admin details
             const eventResponse = {
                 id: newEvent.id,
                 eventName: newEvent.eventName,
                 category: newEvent.category,
                 startDate: newEvent.startDate,
                 endDate: newEvent.endDate,
-                createdBy: {
-                    id: admin.id,
-                    username: admin.username,
-                    email: admin.email,
-                }   
+                createdBy:  admin.username,
             };
     
-            res.status(201).json(eventResponse);
+            res.status(201).json({status:201,eventResponse});
     } catch (error) {
         console.error('Error creating event:', error);
-        res.status(500).json({ error: 'Failed to create event' });
+        res.status(500).json({ status:500,error: 'Failed to create event' });
     }
 };
 
@@ -55,16 +51,16 @@ const deleteEvent = async (req, res) => {
         const eventId = req.params.id;
         const event = await Event.findByPk(eventId);
         if (!event) {
-            return res.status(404).json({ error: 'Event not found' });
+            return res.status(404).json({ status:404,error: 'Event not found' });
         }
 
         // Delete the event
         await Event.destroy({ where: { id: eventId } });
 
-        res.status(200).json({ message: 'Event deleted successfully' });
+        res.status(200).json({ status:200,message: 'Event deleted successfully' });
     } catch (error) {
         console.error('Error deleting event:', error);
-        res.status(500).json({ error: 'Failed to delete event' });
+        res.status(500).json({status:500, error: 'Failed to delete event' });
     }
 };
 
@@ -76,12 +72,12 @@ const updateEvent = async (req, res) => {
         // Check if the event exists
         let event = await Event.findByPk(eventId);
         if (!event) {
-            return res.status(404).json({ error: 'Event not found' });
+            return res.status(404).json({status:404, error: 'Event not found' });
         }
 
         const existingEvent = await Event.findOne({ where: { eventName } });
         if (existingEvent) {
-            return res.status(400).json({ error: 'Event with this name already exists' });
+            return res.status(400).json({status:400, error: 'Event with this name already exists' });
         }
 
         // Update the event
@@ -94,10 +90,10 @@ const updateEvent = async (req, res) => {
         // Optionally, you can fetch updated event details and send them in the response
         event = await Event.findByPk(eventId);
 
-        res.status(200).json(event);
+        res.status(200).json({status:200,event});
     } catch (error) {
         console.error('Error updating event:', error);
-        res.status(500).json({ error: 'Failed to update event' });
+        res.status(500).json({status:500, error: 'Failed to update event' });
     }
 };
 
@@ -126,28 +122,35 @@ const listEvents = async (req, res) => {
             totalPages,
         };
 
-        res.status(200).json(response);
+        res.status(200).json({status:200,response});
     } catch (error) {
         console.error('Error listing events:', error);
-        res.status(500).json({ error: 'Failed to list events' });
+        res.status(500).json({ status:500,error: 'Failed to list events' });
     }
 };
 
 const getEventById = async (req, res) => {
     try {
         const eventId = req.params.id;
-
-        // Fetch the event by its ID
+        const adminId = req.user.id; 
+        const admin = await Admin.findByPk(adminId);
         const event = await Event.findByPk(eventId);
 
         if (!event) {
-            return res.status(404).json({ error: 'Event not found' });
+            return res.status(404).json({status:404, error: 'Event not found' });
         }
-
-        res.status(200).json(event);
+    const eventdata ={
+        id:event.id,
+        eventName:event.eventName,
+        category:event.category,
+        startDate:event.startDate,
+        endDate:event.endDate,
+        createdBy:admin.username
+    }
+        res.status(200).json({status:200,eventdata});
     } catch (error) {
         console.error('Error fetching event:', error);
-        res.status(500).json({ error: 'Failed to fetch event' });
+        res.status(500).json({status:500, error: 'Failed to fetch event' });
     }
 };
 
@@ -171,13 +174,13 @@ const filterUsers = async (req, res) => {
   
       if (users.length === 0) {
         return res.status(404)
-          .json({ message: "No event found matching the database" });
+          .json({status:404, message: "No event found matching the database" });
       }
   
-      res.status(200).json({ users});
+      res.status(200).json({status:200, users});
     } catch (error) {
       console.error("Error filtering users:", error);
-      res.status(500).json({ error: "Failed to filter event" });
+      res.status(500).json({status:500, error: "Failed to filter event" });
     }
   };
 

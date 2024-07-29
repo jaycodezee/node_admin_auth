@@ -44,7 +44,6 @@ const validateRequest = (schema) => {
   };
 };
 
-module.exports = validateRequest;
 
 
 module.exports = validateRequest;

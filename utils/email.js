@@ -1,4 +1,7 @@
+const { config } = require('dotenv');
 const nodemailer = require('nodemailer');
+
+require('dotenv')= config()
 
 const sendPasswordResetEmail = async (email, resetLink) => {
   try {
@@ -12,16 +15,16 @@ const sendPasswordResetEmail = async (email, resetLink) => {
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: email,// The recipient's email address
+      to: email,
       subject: 'Password Reset',
       text: `You requested a password reset. Click the link to reset your password: ${resetLink}`,
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(`Password reset email sent to: ${to}`);
+    console.log(`Password reset email sent to: ${email}`);
   } catch (error) {
     console.error('Error sending email:', error);
-    // throw new Error('Error sending email');
+    throw new Error('Error sending email');
   }
 };
 

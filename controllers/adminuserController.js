@@ -1,4 +1,4 @@
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const User = require("../models/User");
 const Admin = require("../models/Admin");
 
@@ -9,19 +9,19 @@ const addUser = async (req, res) => {
 
     const existingUsername = await User.findOne({ where: { username } });
     if (existingUsername) {
-      return res.status(400).json({ error: "username already exists" });
+      return res.status(400).json({ status:400,error: "username already exists" });
     }
     
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ error: "Email already exists" }); 
+      return res.status(400).json({ status:400,error: "Email already exists" }); 
     }
 
     const newUser = await User.create({ username, email, password, adminId });
-    res.status(201).json(newUser);
+    res.status(201).json({statue:201,newUser});
   } catch (error) {
     console.error("Error adding user:", error);
-    res.status(500).json({ error: "Failed to add user" });
+    res.status(500).json({status:500, error: "Failed to add user" });
   }
 };
 
@@ -31,7 +31,7 @@ const deleteUser = async (req, res) => {
     const adminId = req.user.id; 
     const user = await User.findByPk(userId);
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ status:404, error: "User not found" });
     }
     
     await User.destroy({
@@ -41,13 +41,13 @@ const deleteUser = async (req, res) => {
         }
       });
     if(!adminId){
-    res.status(200).json({ message: "User deleted successfully" });}
+    res.status(200).json({ status:200, message: "User deleted successfully" });}
     else{
-      return res.status(400).json({ error: "You can't delete this user" }); 
+      return res.status(400).json({  status:400,error: "You can't delete this user" }); 
     }
   } catch (error) {
     console.error("Error deleting user:", error);
-    res.status(500).json({ error: "Failed to delete user" });
+    res.status(500).json({  status:500,error: "Failed to delete user" });
   }
 };
 
@@ -72,19 +72,20 @@ const getUsersByAdmin = async (req, res) => {
     });
 
     if (users.rows.length === 0) {
-      return res.status(404).json({ message: "No users found for this admin" });
+      return res.status(404).json({ status:404, message: "No users found for this admin" });
     }
 
     const totalPages = Math.ceil(users.count / limit);
 
     res.status(200).json({
+      status:200,
       users: users.rows,
       totalPages,
       currentPage: page,
     });
   } catch (error) {
     console.error("Error fetching users:", error);
-    res.status(500).json({ error: "Failed to fetch users" });
+    res.status(500).json({ status:500, error: "Failed to fetch users" });
   }
 };
 
@@ -96,11 +97,11 @@ const updateUser = async (req, res) => {
 
     let user = await User.findByPk(userId);
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ status:404, error: "User not found" });
     }
 
     if (user.adminId !== adminId) {
-      return res.status(404).json({ error: "You can't Upadte this user data" });
+      return res.status(404).json({ status:404, error: "You can't Upadte this user data" });
     }
 
     user.username = username;
@@ -109,15 +110,15 @@ const updateUser = async (req, res) => {
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ error: "Email already exists" });
+      return res.status(400).json({ status:400, error: "Email already exists" });
     }
 
     await user.save();
 
-    res.status(200).json(user);
+    res.status(200).json({ status:200,user});
   } catch (error) {
     console.error("Error updating user:", error);
-    res.status(500).json({ error: "Failed to update user" });
+    res.status(500).json({  status:500,error: "Failed to update user" });
   }
 };
 
@@ -128,15 +129,15 @@ const getUserById = async (req, res) => {
     const user = await User.findByPk(UserId);
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({  status:404,error: "User not found" });
     }
     // if (user.adminId !== adminId) {
-    //   return res.status(404).json({ error: "You can't See this user data" });
+    //   return res.status(404).json({ status:404, error: "You can't See this user data" });
     // }
-    res.status(200).json(user);
+    res.status(200).json({ status:200,user});
   } catch (error) {
     console.error("Error fetching event:", error);
-    res.status(500).json({ error: "Failed to fetch User" });
+    res.status(500).json({ status:500, error: "Failed to fetch User" });
   }
 };
 
@@ -159,12 +160,12 @@ const filterUsers = async (req, res) => {
     });
 
     if (users.length === 0) {
-      return res.status(404).json({ message: "No users found matching the database" });
+      return res.status(404).json({ status:404, message: "No users found matching the database" });
     }
-    res.status(200).json({ users });
+    res.status(200).json({ status:200, users });
   } catch (error) {
     console.error("Error filtering users:", error);
-    res.status(500).json({ error: "Failed to filter users" });
+    res.status(500).json({ status:500, error: "Failed to filter users" });
   }
 };
 
@@ -175,10 +176,10 @@ const deleteall = async (req,res)  =>{
     where : {adminId},
     truncate: false
   });
-  res.status(200).json({ message: "All Users deleted successfully" });
+  res.status(200).json({ status:200, message: "All Users deleted successfully" });
 } catch (error) {
   console.error("Error deleting user:", error);
-  res.status(500).json({ error: "Failed to delete users" });
+  res.status(500).json({  status:500,error: "Failed to delete users" });
 }
 };
 

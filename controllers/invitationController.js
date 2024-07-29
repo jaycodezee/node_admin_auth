@@ -9,15 +9,15 @@ const sendInvitation = async (req, res) => {
 
     const inviter = await User.findByPk(inviterId);
     if (!inviter) {
-      return res.status(404).json({ error: "Inviter not found" });
+      return res.status(404).json({status:404, error: "Inviter not found" });
     }
 
     const event = await Event.findByPk(eventId);
     if (!event) {
-      return res.status(404).json({ error: "Event not found" });
+      return res.status(404).json({status:404, error: "Event not found" });
     }
     if (!Array.isArray(inviteeIds) || inviteeIds.length === 0) {
-      return res.status(400).json({ error: "Invalid inviteeIds format" });
+      return res.status(400).json({ status:400,error: "Invalid inviteeIds format" });
     }
 
     const invitees = await User.findAll({
@@ -27,12 +27,12 @@ const sendInvitation = async (req, res) => {
     });
 
     if (invitees.length !== inviteeIds.length) {
-        return res.status(400).json({ error: "One  invitees not found" });
+        return res.status(400).json({status:400, error: "One  invitees not found" });
       }
       
-      //   if (inviteeIds.id == inviteeIds.id) {
-      //   return res.status(400).json({ error: "you can invitees other not you" });
-      // }
+        if (inviteeIds.id == inviteeIds.id) {
+        return res.status(400).json({ status:400,error: "you can invitees other not you" });
+      }
     
 
     const invitations = await Promise.all(
@@ -48,10 +48,10 @@ const sendInvitation = async (req, res) => {
       })
     );
 
-    res.status(201).json(invitations);
+    res.status(201).json({status:201,invitations});
   } catch (error) {
     console.error("Error sending invitations:", error);
-    res.status(500).json({ error: "Failed to send invitations" });
+    res.status(500).json({status:500, error: "Failed to send invitations" });
   }
 };
 
@@ -61,7 +61,7 @@ const getInvitationsByUser = async (req, res) => {
 
     const user = await User.findByPk(userId);
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({status:404, error: "User not found" });
     }
 
     const invitations = await Invitation.findAll({
@@ -74,10 +74,10 @@ const getInvitationsByUser = async (req, res) => {
       ],
     });
 
-    res.status(200).json(invitations);
+    res.status(200).json({status:200,invitations});
   } catch (error) {
     console.error("Error fetching invitations:", error);
-    res.status(500).json({ error: "Failed to fetch invitations" });
+    res.status(500).json({status:500, error: "Failed to fetch invitations" });
   }
 };
 
