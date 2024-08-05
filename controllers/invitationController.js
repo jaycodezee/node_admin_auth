@@ -17,7 +17,7 @@ const sendInvitation = async (req, res) => {
       return res.status(404).json({status:404, error: "Event not found" });
     }
     if (!Array.isArray(inviteeIds) || inviteeIds.length === 0) {
-      return res.status(400).json({ status:400,error: "Invalid inviteeIds format" });
+      return res.status(400).json({ status:400,error: "Invalid inviteeIds format plz make an array and invitee them" });
     }
 
     const invitees = await User.findAll({
@@ -30,9 +30,9 @@ const sendInvitation = async (req, res) => {
         return res.status(400).json({status:400, error: "One  invitees not found" });
       }
       
-        if (inviteeIds.id == inviteeIds.id) {
-        return res.status(400).json({ status:400,error: "you can invitees other not you" });
-      }
+      //   if (inviteeIds.id === inviteeIds.id) {
+      //   return res.status(400).json({ status:400,error: " invitees ones...." });
+      // }
     
 
     const invitations = await Promise.all(
@@ -42,13 +42,12 @@ const sendInvitation = async (req, res) => {
           inviteeId: invitee.id,
           eventId,
           message,
-          
         });
         return invitation;
       })
     );
 
-    res.status(201).json({status:201,invitations});
+    res.status(201).json({status:201,invitations,});
   } catch (error) {
     console.error("Error sending invitations:", error);
     res.status(500).json({status:500, error: "Failed to send invitations" });

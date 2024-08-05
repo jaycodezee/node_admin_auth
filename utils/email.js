@@ -1,7 +1,6 @@
 const { config } = require('dotenv');
 const nodemailer = require('nodemailer');
 
-require('dotenv')= config()
 
 const sendPasswordResetEmail = async (email, resetLink) => {
   try {

@@ -15,7 +15,7 @@ const authenticateAdmin = async (req, res, next) => {
     const admin = await Admin.findByPk(decoded.id);
 
     if (!admin) {
-      return res.status(401).json({ error: 'Invalid token' });
+      return res.status(401).json({ error: 'login and then add .....' });
     }
 
     if (admin.accessToken !== token) {

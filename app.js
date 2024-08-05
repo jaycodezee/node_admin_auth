@@ -7,7 +7,6 @@ const invitationRoutes = require('./routes/invitationRoutes');
 const globalErrHandler = require('./controllers/errorController');
 
 
-require('dotenv').config();
 
 const app = express();
 
