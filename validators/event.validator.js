@@ -1,4 +1,4 @@
-const Joi = require('joi')
+const Joi = require("joi");
 
 const eventschema = Joi.object({
   eventName: Joi.string().min(2).lowercase().required(),
@@ -13,10 +13,7 @@ const eventupdateschema = Joi.object({
   endDate: Joi.string().isoDate().min(3).required(),
 });
 
-
-
-
 module.exports = {
-    eventschema,
-    eventupdateschema
- };
+  eventschema,
+  eventupdateschema,
+};

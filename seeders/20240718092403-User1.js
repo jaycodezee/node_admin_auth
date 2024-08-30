@@ -9,13 +9,13 @@ module.exports = {
         {
           Name: "John ",
         },
-         {
+        {
           Name: " Doe",
         },
-         {
+        {
           Name: "nkjw Doe",
         },
-         {
+        {
           Name: "dm Doe",
         },
       ],

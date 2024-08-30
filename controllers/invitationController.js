@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
 const Invitation = require("../models/invitation");
-const User = require("../models/user");
+const User = require("../models/User");
 const Event = require("../models/event");
 
 const sendInvitation = async (req, res) => {
@@ -9,15 +9,18 @@ const sendInvitation = async (req, res) => {
 
     const inviter = await User.findByPk(inviterId);
     if (!inviter) {
-      return res.status(404).json({status:404, error: "Inviter not found" });
+      return res.status(404).json({ status: 404, error: "Inviter not found" });
     }
 
     const event = await Event.findByPk(eventId);
     if (!event) {
-      return res.status(404).json({status:404, error: "Event not found" });
+      return res.status(404).json({ status: 404, error: "Event not found" });
     }
     if (!Array.isArray(inviteeIds) || inviteeIds.length === 0) {
-      return res.status(400).json({ status:400,error: "Invalid inviteeIds format plz make an array and invitee them" });
+      return res.status(400).json({
+        status: 400,
+        error: "Invalid inviteeIds format plz make an array and invitee them",
+      });
     }
 
     const invitees = await User.findAll({
@@ -27,13 +30,14 @@ const sendInvitation = async (req, res) => {
     });
 
     if (invitees.length !== inviteeIds.length) {
-        return res.status(400).json({status:400, error: "One  invitees not found" });
-      }
-      
-      //   if (inviteeIds.id === inviteeIds.id) {
-      //   return res.status(400).json({ status:400,error: " invitees ones...." });
-      // }
-    
+      return res
+        .status(400)
+        .json({ status: 400, error: "One  invitees not found" });
+    }
+
+    //   if (inviteeIds.id === inviteeIds.id) {
+    //   return res.status(400).json({ status:400,error: " invitees ones...." });
+    // }
 
     const invitations = await Promise.all(
       invitees.map(async (invitee) => {
@@ -47,10 +51,10 @@ const sendInvitation = async (req, res) => {
       })
     );
 
-    res.status(201).json({status:201,invitations,});
+    res.status(201).json({ status: 201, invitations });
   } catch (error) {
     console.error("Error sending invitations:", error);
-    res.status(500).json({status:500, error: "Failed to send invitations" });
+    res.status(500).json({ status: 500, error: "Failed to send invitations" });
   }
 };
 
@@ -60,7 +64,7 @@ const getInvitationsByUser = async (req, res) => {
 
     const user = await User.findByPk(userId);
     if (!user) {
-      return res.status(404).json({status:404, error: "User not found" });
+      return res.status(404).json({ status: 404, error: "User not found" });
     }
 
     const invitations = await Invitation.findAll({
@@ -73,10 +77,10 @@ const getInvitationsByUser = async (req, res) => {
       ],
     });
 
-    res.status(200).json({status:200,invitations});
+    res.status(200).json({ status: 200, invitations });
   } catch (error) {
     console.error("Error fetching invitations:", error);
-    res.status(500).json({status:500, error: "Failed to fetch invitations" });
+    res.status(500).json({ status: 500, error: "Failed to fetch invitations" });
   }
 };
 
